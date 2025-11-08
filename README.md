@@ -1,5 +1,7 @@
 # Rails AI CLI Setup
 
+> ⚠️ **Work in Progress**: This configuration is actively being developed and refined. Features, commands, and documentation may change as we improve the setup based on real-world usage and community feedback.
+
 A curated configuration setup for Claude Code (Anthropic's AI CLI tool) optimized for Ruby on Rails application development following DHH's orthodox Rails principles.
 
 ## Overview
