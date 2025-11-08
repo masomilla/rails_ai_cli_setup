@@ -338,7 +338,7 @@ Contributions are welcome, especially if they strengthen Rails orthodoxy and con
 
 MIT License
 
-Copyright (c) 2025 Jacopo Beschi
+Copyright (c) 2025 Masomilla srl
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
