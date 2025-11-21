@@ -2,11 +2,11 @@
 
 > ⚠️ **Work in Progress**: This configuration is actively being developed and refined. Features, commands, and documentation may change as we improve the setup based on real-world usage and community feedback.
 
-A curated configuration setup for Claude Code (Anthropic's AI CLI tool) optimized for Ruby on Rails application development following DHH's orthodox Rails principles.
+A curated configuration setup for Claude Code (Anthropic's AI CLI tool) and Codex CLI, optimized for Ruby on Rails application development following DHH's orthodox Rails principles.
 
 ## Overview
 
-This repository contains a battle-tested configuration structure for using Claude Code with Rails applications. It's designed for developers who follow the "Rails Way" and want their AI assistant to understand and respect Rails conventions, particularly:
+This repository contains a battle-tested configuration structure for using Claude Code and Codex CLI with Rails applications. It's designed for developers who follow the "Rails Way" and want their AI assistant to understand and respect Rails conventions, particularly:
 
 - Monolithic architecture ("Majestic Monolith")
 - Server-rendered web applications
@@ -16,7 +16,7 @@ This repository contains a battle-tested configuration structure for using Claud
 
 ## What's Included
 
-- **Custom Instructions**: Pre-configured prompts that teach Claude Code about Rails conventions and DHH's development philosophy
+- **Custom Instructions**: Pre-configured prompts that teach Claude Code and Codex CLI about Rails conventions and DHH's development philosophy
 - **Context Files**: Structured documentation for your Rails stack (models, controllers, views, Hotwire patterns)
 - **Subagent Configurations**: Specialized AI agents for different aspects of Rails development:
   - Domain logic and business rules
@@ -42,7 +42,7 @@ This setup is opinionated by design. It guides Claude Code to:
 
 ## Development Workflow
 
-This setup is designed to augment, not replace, the developer. The developer evolves into an **analyst, project manager, and code reviewer**, while Claude Code acts as a **junior developer** executing well-defined tasks.
+This setup is designed to augment, not replace, the developer. The developer evolves into an **analyst, project manager, and code reviewer**, while Claude Code (or Codex) acts as a **junior developer** executing well-defined tasks.
 
 ### The Process
 
@@ -109,7 +109,7 @@ The `.agent_session/` directory becomes the "memory" of your development session
 
 ## Available Slash Commands
 
-This setup includes custom slash commands that streamline common Rails development workflows:
+This setup includes custom slash commands that streamline common Rails development workflows (available for both Claude Code and Codex):
 
 ### Planning & Implementation
 - **`/create-plan`** - Creates detailed implementation plans for GitHub issues through interactive analysis. Uses specialized agents to research the codebase and design solutions. Maintains context in `.agent_session/context.md` to reduce token consumption by 70%.
@@ -187,6 +187,10 @@ After installation, authenticate with your Anthropic API key:
 claude auth
 ```
 
+### 1b. (Optional) Install Codex CLI
+
+If you also use Codex CLI (the OpenAI-compatible CLI running this workspace), it will automatically load prompts from `.codex/prompts/`. No extra configuration is required beyond copying the `.codex` folder to your project (see step 4).
+
 ### 2. Install GitHub CLI
 
 The GitHub CLI is required for creating pull requests and working with GitHub issues.
@@ -262,8 +266,11 @@ Start a Claude Code session and check that Playwright tools are available:
 **Clone or copy this configuration** to your Rails project:
 
 ```bash
-# Copy .claude directory to your Rails project
+# Copy .claude directory to your Rails project (Claude Code)
 cp -r .claude /path/to/your/rails/project/
+
+# Copy .codex directory to your Rails project (Codex CLI)
+cp -r .codex /path/to/your/rails/project/
 
 # Create agent session directory
 mkdir -p .agent_session
@@ -290,7 +297,7 @@ Review and customize `.claude/CLAUDE.md` with your project-specific:
 ⚠️ **Note**: This setup is configured to generate artifacts (plans, analysis, documentation) in **Italian** by default, as the original author is Italian. The slash commands and agents use Italian for their output.
 
 If you prefer **English** or another language:
-1. Edit each command file in `.claude/commands/*.md`
+1. Edit each command file in `.claude/commands/*.md` and/or `.codex/prompts/*.md`
 2. Update the response templates and prompts to your preferred language
 3. Edit agent files in `.claude/agents/*.md` to change output language
 4. Modify `CLAUDE.md` development preferences section
@@ -307,6 +314,13 @@ Start Claude Code in your Rails project directory:
 ```bash
 cd /path/to/your/rails/project
 claude
+```
+
+Or start Codex from the same directory if you prefer that CLI:
+
+```bash
+cd /path/to/your/rails/project
+codex
 ```
 
 Test that slash commands are available:
