@@ -3,444 +3,170 @@ name: create-plan
 description: Creates a detailed implementation plan for a GitHub issue through interactive analysis, using specialized agents to research the codebase and design the solution. Maintains context in .agent_session/context.md to reduce token consumption by 70%.
 ---
 
-You are tasked with creating detailed implementation plans through an interactive, iterative process in the Ruby on Rails application. You should be skeptical, thorough, and work collaboratively with the user to produce high-quality technical specifications.
+Create detailed implementation plans through interactive analysis in this Rails application. Be skeptical, thorough, and collaborative.
 
-## Rules
-- **CRITICAL**: Before ANY work, check if `.agent_session/context.md` exists. If not, create it immediately
-- **MANDATORY**: Update `.agent_session/context.md` BEFORE spawning ANY sub-agent task
-- The context file MUST contain:
-  - issue summary and requirements
-  - Key discoveries from research
-  - Design decisions made
-  - Current implementation status
-  - Open questions and blockers
-- This reduces token consumption by 70% as agents don't need to re-read everything
+## Core Rules
 
-## Context File Structure
+1. **Context Management**: Create/update `.agent_session/context.md` BEFORE any work with: issue summary, scope, discoveries, design decisions, open questions
+2. **Read Fully**: Always read files completely (no limits/offsets) before making decisions
+3. **No Unresolved Questions**: Final plan must have zero open questions - research or ask immediately
+4. **Parallel Work**: Spawn multiple specialized agents concurrently for efficiency
+5. **Track Progress**: Use TodoWrite to track planning tasks
+6. **Service Object**: No service object, use insted Concern or PORO 
 
-The `.agent_session/context.md` file MUST follow this structure:
+## Process
 
+### 1. Context Setup & Research
+
+**Create `.agent_session/context.md`**:
 ```markdown
 # Session Context: [Feature Name]
 Last Updated: [timestamp]
 
-## issue Summary
+## Issue Summary
 - **ID**: #[number]
-- **Requirement**: [one-line summary]
-- **Scope**: [what's included]
-- **Out of Scope**: [what's NOT included]
+- **Requirement**: [summary]
+- **Scope**: [included]
+- **Out of Scope**: [excluded]
 
 ## Key Discoveries
-- **Existing Patterns**: [what we found]
-- **Files Involved**: [list of key files with purpose]
-- **Current Implementation**: [how it works now]
+- **Existing Patterns**: [findings]
+- **Files Involved**: [paths with purpose]
+- **Current Implementation**: [how it works]
 
 ## Design Decisions
-- **Approach**: [chosen approach]
-- **Rationale**: [why this approach]
-- **Alternatives Considered**: [other options]
+- **Approach**: [chosen]
+- **Rationale**: [why]
+- **Alternatives**: [other options]
 
 ## Open Questions
-- [ ] [question needing answer]
-- [ ] [another question]
+- [ ] [unresolved items]
 ```
 
-## Initial Response
+**Spawn parallel research** (update context.md first):
+- **codebase-locator**: Find related Rails files (models/controllers/views/jobs)
+- **codebase-analyzer**: Understand current implementation
+- **web-researcher**: Research patterns/gems if needed
 
-When this command is invoked:
+**Read all identified files fully** into main context
 
-1. **Check if parameters were provided**:
-   - If a Github ID issue reference was provided as a parameter, skip the default message
-   - Immediately read any provided files FULLY
-   - Begin the research process
+### 2. Design
 
-2. **If no parameters provided**, respond with:
+**Spawn design specialists** based on needs:
+- **model-specialist**: ActiveRecord models, schema, associations
+- **frontend-specialist**: ERB views, controllers, TailwindCSS
+- **hotwire-specialist**: Turbo Frames/Streams, Stimulus
+- **rails-specialist**: Background jobs, Solid Queue
+- **test-specialist**: Minitest, fixtures, system tests
+
+**Present findings**:
 ```
-Ti aiuterò a creare un piano di implementazione dettagliato. Iniziamo capendo cosa stiamo costruendo.
-
-Per favore fornisci:
-1. La descrizione del task/issue (o riferimento a una Github issue)
-2. Qualsiasi contesto rilevante, vincoli o requisiti specifici
-3. Link a ricerche correlate o implementazioni precedenti
-
-Analizzerò queste informazioni e lavorerò con te per creare un piano completo.
-
-Suggerimento: Puoi anche invocare questo comando direttamente con un issue ID: `#1008`
-Per un'analisi più approfondita, prova: `/create_plan think deeply about issue #1008`
+**Stato Attuale**: [current behavior]
+**Opzioni**: [approaches with pros/cons]
+**Domande**: [clarifications needed]
 ```
 
-Then wait for the user's input.
+### 3. Write Plan
 
-## Process Steps
-
-### Step 1: Context Gathering & Initial Analysis
-
-1. **Read all mentioned files immediately and FULLY**:
-   - Github issue using: `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]`
-   - Note: The token is stored in 1Password, ensure it's unlocked on desktop
-   - Extract and analyze:
-     * **Functional requirements**: What the feature must do
-     * **Domain entities**: Models, controllers, and services involved
-     * **User interactions**: UI flows, forms, and user journey
-     * **Data flow**: How data moves through the system
-     * **Integration points**: External services, APIs, or background jobs
-     * **Non-functional requirements**: Performance, security, multi-tenancy constraints
-     * **Acceptance criteria**: How to verify the feature works correctly
-   - Research related documentation and context files
-   - **IMPORTANT**: Use the Read tool WITHOUT limit/offset parameters to read entire files
-   - **CRITICAL**: DO NOT spawn sub-tasks before reading these files yourself in the main context
-   - **NEVER** read files partially - if a file is mentioned, read it completely
-
-2. **Spawn initial research tasks to gather context**:
-   Before asking the user any questions, use specialized agent to research in parallel:
-
-   - Use the **codebase-locator** agent to find all files related to the issue/task
-   - Use the **codebase-analyzer** agent to understand how the current implementation works
-   
-   These agent will:
-   - Find relevant source files, configs, and tests
-   - Identify the specific directories to focus on
-   - Trace data flow and key functions
-   - Return detailed explanations with file:line references
-
-3. **Read all files identified by research tasks**:
-   - After research tasks complete, read ALL files they identified as relevant
-   - Read them FULLY into the main context
-   - This ensures you have complete understanding before proceeding
-
-4. **Analyze and verify understanding**:
-   - Cross-reference the issue requirements with actual code
-   - Identify any discrepancies or misunderstandings
-   - Note assumptions that need verification
-   - Determine true scope based on codebase reality
-
-### Step 2: Design
-
-After getting initial clarifications:
-
-1. **If the user corrects any misunderstanding**:
-   - DO NOT just accept the correction
-   - Spawn new research tasks to verify the correct information
-   - Read the specific files/directories they mention
-   - Only proceed once you've verified the facts yourself
-
-2. **Create a design todo list** using TodoWrite to track exploration tasks
-
-3. **Spawn parallel sub-tasks for comprehensive design**:
-   - Create multiple Task agents to design different aspects concurrently
-   - Use the right agent for each type of design:
-
-   **For deeper investigation:**
-   - **codebase-locator** - To find Rails files (models, controllers, views, jobs) related to a feature or component
-   - **codebase-analyzer** - To understand implementation details (e.g., "analyze how [system] works")
-   - **web-researcher** - To research modern Rails patterns, gem documentation, or technical solutions
-
-   **For architecture design:**
-   - **model-specialist** - To design ActiveRecord models, associations, and database schema following Fat Model philosophy
-   - **frontend-specialist** - To design ERB views, controllers, and TailwindCSS following Rails conventions
-   - **hotwire-specialist** - To design Turbo Frames/Streams and Stimulus controllers for dynamic UI
-   - **job-specialist** - To design Solid Queue background jobs with proper tenant isolation and retry logic
-
-   **For quality assurance:**
-   - **test-specialist** - To design Minitest tests, fixtures, and system tests following Rails testing patterns
-   
-   Each agent knows how to:
-   - Find the right files and code patterns
-   - Identify conventions and patterns to follow
-   - Look for integration points and dependencies
-   - Return specific file:line references
-   - Find tests and examples
-
-3. **Wait for ALL sub-tasks to complete** before proceeding
-
-4. **Present findings and design options**:
-   ```
-   Basandomi sulla mia ricerca, ecco cosa ho trovato:
-
-   **Stato Attuale:**
-   - [Scoperta chiave sul codice esistente]
-   - [Pattern o convenzione da seguire]
-
-   **Opzioni di Design:**
-   1. [Opzione A] - [pro/contro]
-   2. [Opzione B] - [pro/contro]
-
-   **Domande Aperte:**
-   - [Incertezza tecnica]
-   - [Decisione di design necessaria]
-
-   Quale approccio si allinea meglio con la tua visione?
-   ```
-
-### Step 3: Detailed Plan Writing
-
-1. **Write the plan** to `.agent_session/plan.md`
-2. **Use this template structure**:
+Write to `.agent_session/plan.md` in Italian language:
 
 ````markdown
-# Piano di Implementazione [Nome Feature/Task]
+# Piano di Implementazione [Nome]
 
 ## Panoramica
+[Cosa e perché]
 
-[Breve descrizione di cosa stiamo implementando e perché]
-
-## Analisi dello Stato Attuale
-
-[Cosa esiste ora, cosa manca, vincoli chiave scoperti]
+## Stato Attuale
+[Cosa esiste, vincoli scoperti]
 
 ## Stato Finale Desiderato
+[Comportamento atteso e verifica]
 
-[Una specifica dello stato finale desiderato dopo il completamento di questo piano e come verificarlo]
+### Scoperte Chiave
+- [file:line references]
+- [Patterns to follow]
 
-### Scoperte Chiave:
-- [Scoperta importante con riferimento file:riga]
-- [Pattern da seguire]
-- [Vincolo entro cui lavorare]
+## Cosa NON Facciamo
+[Out of scope explicit]
 
-## Cosa NON Stiamo Facendo
+## Fase 1: [Nome]
 
-[Elencare esplicitamente gli elementi fuori scope per prevenire l'ampliamento del progetto]
-
-## Approccio all'Implementazione
-
-[Strategia di alto livello e ragionamento]
-
-## Fase 1: [Nome Descrittivo]
-
-### Panoramica
-[Cosa realizza questa fase]
-
-### Modifiche Richieste:
-
-#### 1. [Componente/Gruppo di File]
-**File**: `path/to/file.ext`
-**Modifiche**: [Riassunto delle modifiche]
-
-```[linguaggio]
-// Codice specifico da aggiungere/modificare
+### Modifiche
+**File**: `path/to/file.rb`
+```ruby
+# Specific changes
 ```
 
-### Criteri di Successo:
+### Criteri di Successo
 
-#### Verifica Automatica:
-- [ ] La migrazione si applica correttamente: `bin/rails db:migrate`
-- [ ] I test passano: `bin/rails test`
-- [ ] I test di sistema passano: `bin/rails test:system`
-- [ ] La verifica di sicurezza statica del codice passa: `bearer scan .`
+#### Verifica Automatica
+- [ ] `bin/rails db:migrate`
+- [ ] `bin/rails test`
+- [ ] `bearer scan .`
 
-#### Verifica Manuale:
-- [ ] La funzionalità funziona come previsto quando testata via UI
-- [ ] Le prestazioni sono accettabili sotto carico
-- [ ] La gestione dei casi limite verificata manualmente
-- [ ] Nessuna regressione nelle funzionalità correlate
+#### Verifica Manuale
+- [ ] UI functionality works
+- [ ] Performance acceptable
+- [ ] Edge cases handled
 
 ---
 
-## Fase 2: [Nome Descrittivo]
-
-[Struttura simile con criteri di successo sia automatici che manuali...]
+## Fase 2: [Nome]
+[Ripeti struttura]
 
 ---
 
 ## Strategia di Test
-
-### Test Unitari:
-- [Cosa testare]
-- [Casi limite chiave]
-
-### Test di Integrazione:
-- [Scenari end-to-end]
-
-### Passi di Test Manuali:
-1. [Passo specifico per verificare la funzionalità]
-2. [Altro passo di verifica]
-3. [Caso limite da testare manualmente]
-
-## Considerazioni sulle Prestazioni
-
-[Eventuali implicazioni sulle prestazioni o ottimizzazioni necessarie]
-
-## Note sulla Migrazione
-
-[Se applicabile, come gestire dati/sistemi esistenti]
+- **Unit**: [focus areas]
+- **Integration**: [end-to-end scenarios]
+- **Manual**: [specific steps]
 
 ## Riferimenti
-
-- issue originale: `github issue #XXXX`
-- Ricerca correlata: `.agent_session/[pertinente].md`
-- Implementazione simile: `[file:riga]`
+- Issue: #[number]
+- Similar: [file:line]
 ````
 
-### Step 4: Review
+### 4. Review
 
-1. **Present the draft plan location**:
-   ```
-   Ho creato il piano di implementazione iniziale in:
-   `.agent_session/plan.md`
-
-   Per favore, revisionalo e fammi sapere:
-   - Le fasi sono ben definite nel loro ambito?
-   - I criteri di successo sono abbastanza specifici?
-   - Ci sono dettagli tecnici che necessitano di aggiustamenti?
-   - Mancano casi limite o considerazioni?
-   ```
-
-3. **Iterate based on feedback** - be ready to:
-   - Add missing phases
-   - Adjust technical approach
-   - Clarify success criteria (both automated and manual)
-   - Add/remove scope items
-
-4. **Continue refining** until the user is satisfied
-
-## Important Guidelines
-
-1. **Be Skeptical**:
-   - Question vague requirements
-   - Identify potential issues early
-   - Ask "why" and "what about"
-   - Don't assume - verify with code
-
-2. **Be Interactive**:
-   - Don't write the full plan in one shot
-   - Get buy-in at each major step
-   - Allow course corrections
-   - Work collaboratively
-
-3. **Be Thorough**:
-   - Read all context files COMPLETELY before planning
-   - Research actual code patterns using parallel sub-tasks
-   - Design using parallel sub-tasks
-   - Include specific file paths and line numbers
-   - Write measurable success criteria with clear automated vs manual distinction
-
-4. **Be Practical**:
-   - Focus on incremental, testable changes
-   - Consider migration and rollback
-   - Think about edge cases
-   - Include "what we're NOT doing"
-
-5. **Track Progress**:
-   - Use TodoWrite to track planning tasks
-   - Update todos as you complete research
-   - Mark planning tasks complete when done
-
-6. **No Open Questions in Final Plan**:
-   - If you encounter open questions during planning, STOP
-   - Research or ask for clarification immediately
-   - Do NOT write the plan with unresolved questions
-   - The implementation plan must be complete and actionable
-   - Every decision must be made before finalizing the plan
-
-## Success Criteria Guidelines
-
-**Always separate success criteria into two categories:**
-
-1. **Automated Verification** (can be run by execution agents):
-   - Commands that can be run: `bin/rails test`, `bin/rails test:system`, etc.
-   - Specific files that should exist
-   - Code compilation/type checking
-   - Automated test suites
-   - Security scan code: `bearer scan .`
-
-2. **Manual Verification** (requires human testing):
-   - UI/UX functionality
-   - Performance under real conditions
-   - Edge cases that are hard to automate
-   - User acceptance criteria
-
-**Format example:**
-```markdown
-### Criteri di Successo:
-
-#### Verifica Automatica:
-- [ ] La migrazione del database viene eseguita con successo: `bin/rails db:migrate`
-- [ ] Tutti i test unitari passano: `bin/rails test`
-- [ ] Tutti i test di sistema passano: `bin/rails test:system`
-- [ ] Sicurezza statica: `bearer scan .`
-
-
-#### Verifica Manuale:
-- [ ] La nuova funzionalità appare correttamente nell'UI
-- [ ] Le prestazioni sono accettabili con 1000+ elementi
-- [ ] I messaggi di errore sono user-friendly
-- [ ] La funzionalità funziona correttamente su dispositivi mobili
 ```
+Piano in `.agent_session/plan.md`
+
+Verifica:
+- Fasi ben definite?
+- Criteri sufficientemente specifici?
+- Dettagli tecnici corretti?
+- Casi limite coperti?
+```
+
+Iterate until approved.
+
+## Guidelines
+
+**Be Skeptical**: Question vague requirements, identify issues early, verify with code
+**Be Interactive**: Get buy-in at each step, allow corrections
+**Be Thorough**: Research with parallel agents, include file:line references
+**Be Practical**: Incremental changes, consider migration/rollback, list "NOT doing"
+
+## Agent Best Practices
+
+**When spawning agents**:
+1. Update context.md section "For Sub-Agents" first
+2. Spawn multiple tasks in parallel
+3. Be specific about directories (`app/models/`, `app/controllers/`)
+4. Request file:line references
+5. Wait for completion before synthesizing
+6. Verify results match codebase reality
+
+**Agent prompts should include**: "IMPORTANTE: Leggi PRIMA `.agent_session/context.md`"
+
+## Success Criteria Format
+
+Always separate:
+- **Automated**: Commands (`bin/rails test`), file existence, compilation
+- **Manual**: UI/UX, performance, edge cases, user acceptance
 
 ## Common Patterns
 
-### For Database Changes:
-- Start with schema/migration
-- Add store methods
-- Update business logic
-- Expose via API
-- Update clients
-
-### For New Features:
-- Research existing patterns first
-- Start with data model (migration)
-- Build backend logic (models)
-- Implement controllers and views
-- Enhance with Hotwire
-
-### For Refactoring:
-- Document current behavior
-- Plan incremental changes
-- Maintain backwards compatibility
-- Include migration strategy
-
-## Sub-task Spawning Best Practices
-
-When spawning research sub-tasks:
-
-1. **Spawn multiple tasks in parallel** for efficiency
-2. **Each task should be focused** on a specific area
-3. **Provide detailed instructions** based on agent type:
-   **For search/analysis agents (codebase-locator, codebase-analyzer)**:
-   - Exactly what to search for
-   - Which directories to focus on
-   - What information to extract
-   - Expected output format with file:line references
-
-   **For design specialist agents (model-specialist, frontend-specialist, hotwire-specialist, job-specialist, test-specialist)**:
-   - The specific requirement from the issue
-   - Existing patterns to follow
-   - **MUST**: Update `.agent_session/context.md` section "For Sub-Agents" before spawning
-4. **Be EXTREMELY specific about directories**:
-   - If the issue mentions "models", specify `app/models/` directory
-   - If it mentions "controllers", specify `app/controllers/` directory
-   - If it mentions "background jobs", specify `app/jobs/` directory
-   - If it mentions "views" or "UI", specify `app/views/` and `app/javascript/controllers/`
-   - Include the full Rails path context in your prompts
-5. **Specify read-only tools** to use
-6. **Request specific file:line references** in responses
-7. **Wait for all tasks to complete** before synthesizing
-8. **Verify sub-task results**:
-   - If a sub-task returns unexpected results, spawn follow-up tasks
-   - Cross-check findings against the actual codebase
-   - Verify multi-tenant isolation patterns are followed
-   - Check that Rails conventions are respected
-
-## Example Interaction Flow
-
-```
-User: /create_plan
-Assistant: Ti aiuterò a creare un piano di implementazione dettagliato...
-
-[FIRST ACTION: Create/Update .agent_session/context.md]
-
-User: Dobbiamo aggiungere una feature per l'export dei contatti. Vedi github issue #1234
-Assistant: Fammi prima leggere completamente il issue...
-
-[Reads issue]
-[Updates context.md with issue summary]
-
-Ora invoco gli agent specialisti per analizzare il codebase e progettare la soluzione...
-
-[Updates context.md section "For Sub-Agents" with specific instructions]
-[Spawns multiple agents with: "IMPORTANTE: Leggi PRIMA .agent_session/context.md per il contesto completo"]
-
-[Agents read context.md instead of re-reading everything, saving 70% tokens]
-
-[Interactive process continues...]
-```
+**Database Changes**: migration → models → business logic → API → clients
+**New Features**: research patterns → model → backend → controllers/views → Hotwire
+**Refactoring**: document current → incremental changes → maintain compatibility

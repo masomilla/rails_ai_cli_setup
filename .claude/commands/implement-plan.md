@@ -3,202 +3,140 @@ name: implement-plan
 description: Implements a technical plan for Rails features following the phases defined in .agent_session/plan.md, ensuring Rails conventions, multi-tenancy patterns, and test coverage. Uses context from .agent_session/context.md.
 ---
 
-# Implement Plan
+Implement approved technical plans for Rails features. Follow conventions, ensure multi-tenancy, write tests.
 
-You are tasked with implementing an approved technical plan for the Ruby on Rails application. These plans contain phases with specific changes and success criteria tailored for Rails development.
+## Core Rules
 
-## Rules
-- **CRITICAL**: First read `.agent_session/context.md` for session context
-- **MANDATORY**: Read the plan from `.agent_session/plan.md`
-- Follow Rails conventions and Fat Model philosophy
-- Ensure multi-tenancy with `acts_as_tenant` on all models
-- Write tests for all new functionality
-- Update `.agent_session/context.md` after each phase completion
+1. **Context First**: Read `.agent_session/context.md` and `.agent_session/plan.md` before starting
+2. **Rails Way**: Follow Fat Models, Skinny Controllers, RESTful routes
+3. **Multi-tenancy**: `acts_as_tenant(:account)` on all models
+4. **Test Coverage**: Write tests for all functionality
+5. **Track Progress**: Use TodoWrite and update checkboxes in plan/context
 
 ## Getting Started
 
-When invoked:
-1. **Read context and plan**:
-   - Check `.agent_session/context.md` for current implementation status
-   - Read `.agent_session/plan.md` completely (or ask for plan location if not found)
-   - Check for any existing checkmarks (- [x]) indicating completed work
+**Read files**:
+- `.agent_session/context.md` - implementation status
+- `.agent_session/plan.md` - phases and success criteria
+- Check existing checkmarks `- [x]` for completed work
 
-2. **Understand the Rails feature**:
-   - Read the original GitHub issue using:
-     ```bash
-     GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]
-     ```
-   - Note: The token is stored in 1Password, ensure it's unlocked on desktop
-   - Identify models, controllers, views, and jobs involved
-   - Review related files in the Rails directory structure
-   - **Read files fully** - never use limit/offset parameters
+**Understand feature**:
+- Read GitHub issue: `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]`
+- Identify Rails components: models, controllers, views, jobs
+- Read related files fully (no limits/offsets)
 
-3. **Create implementation todo list** using TodoWrite:
-   - Break down each phase into specific Rails tasks
-   - Include migrations, models, controllers, views, tests
-   - Track progress throughout implementation
+**Create todos**: Break phases into specific tasks using TodoWrite
 
-## Implementation Philosophy
+## Implementation Order
 
-Plans are designed for Rails, but codebases evolve. Your job is to:
-- Follow Rails Way and conventions (Fat Models, Skinny Controllers)
-- Implement each phase fully with proper tests before moving to the next
-- Ensure multi-tenant isolation in all database queries
-- Verify Hotwire/Turbo integration works correctly
-- Update checkboxes in the plan and context.md as you complete sections
+Follow this sequence for each phase:
 
-## Rails Implementation Order
-
-For each phase, follow this sequence:
-
-1. **Database Layer** (if needed):
-   ```bash
-   # Generate and modify migration
-   bin/rails generate migration AddFeatureToModel
-   # Edit db/migrate/[timestamp]_add_feature_to_model.rb
-   # Run migration
-   bin/rails db:migrate
-   ```
-
-2. **Model Layer** (Fat Model pattern):
-   - Add validations, associations, callbacks
-   - Include `acts_as_tenant(:account)` for multi-tenancy
-   - Implement business logic methods
-   - Add scopes and class methods
-
-3. **Controller Layer** (RESTful, Skinny):
-   - Generate controller if needed: `bin/rails generate controller Features`
-   - Implement CRUD actions following REST
-   - Add Pundit authorization
-   - Handle Turbo Stream responses
-
-4. **View Layer** (ERB + Hotwire):
-   - Create ERB templates with Turbo Frames
-   - Add Stimulus controllers for interactivity
-   - Ensure Italian locale for UI text
-
-5. **Background Jobs** (if needed):
-   - Create Solid Queue jobs in `app/jobs/`
-   - Include `ActsAsTenant.with_tenant` for tenant context
-   - Configure retry logic
-
-6. **Tests** (always):
-   - Unit tests in `test/models/`
-   - Controller tests in `test/controllers/`
-   - System tests in `test/system/` for UI flows
-
-If you encounter a mismatch:
-```
-Problema nella Fase [N]:
-Previsto: [cosa dice il piano]
-Trovato: [situazione reale nel codice Rails]
-Impatto: [come questo influenza multi-tenancy/convenzioni Rails]
-
-Come dovrei procedere?
+### 1. Database (if needed)
+```bash
+bin/rails generate migration AddFeatureToModel
+# Edit db/migrate/[timestamp]_*.rb
+bin/rails db:migrate
 ```
 
-## Verification Approach
+### 2. Models (Fat Model)
+- Validations, associations, callbacks
+- `acts_as_tenant(:account)` for multi-tenancy
+- Business logic methods, scopes
 
-After implementing each phase:
+### 3. Controllers (Skinny, RESTful)
+- `bin/rails generate controller Features`
+- CRUD actions, Pundit authorization
+- Turbo Stream responses
 
-1. **Run Rails-specific verification**:
-   ```bash
-   # Test the migration rollback
-   bin/rails db:rollback && bin/rails db:migrate
+### 4. Views (ERB + Hotwire)
+- ERB templates with Turbo Frames
+- Stimulus controllers
+- Italian locale for UI
 
-   # Run all tests
-   bin/rails test
-   bin/rails test:system
+### 5. Background Jobs (if needed)
+- Create in `app/jobs/`
+- Wrap with `ActsAsTenant.with_tenant(account)`
+- Configure retry logic
 
-   # Check code quality
-   bin/rubocop
-   bearer scan .
-   ```
+### 6. Tests (always)
+- `test/models/` - unit tests
+- `test/controllers/` - controller tests
+- `test/system/` - UI flows (only if necessary)
 
-2. **Verify Rails patterns**:
-   - Check multi-tenant isolation works
-   - Verify Pundit policies are enforced
-   - Test Turbo Stream responses
-   - Ensure N+1 queries are avoided
+## Verification Per Phase
 
-3. **Update progress**:
-   - Check off completed items in `.agent_session/plan.md` using Edit
-   - Update `.agent_session/context.md` with implementation status
-   - Update TodoWrite list
+**Run checks**:
+```bash
+bin/rails db:rollback && bin/rails db:migrate  # Test migration
+bin/rails test                                  # All tests
+bin/rails test:system                           # System tests
+bearer scan .                                   # Security
+```
 
-4. **Manual verification** (if UI involved):
-   ```bash
-   # Start Rails server
-   bin/dev
-   # Test in browser at localhost:3000
-   # Check Turbo Frame updates work
-   # Verify Stimulus controllers function
-   ```
+**Verify Rails patterns**:
+- Multi-tenant isolation works
+- Pundit policies enforced
+- No N+1 queries (use `includes()`)
+- Turbo Streams functional
 
-## If You Get Stuck
+**Update progress**:
+- Check items in `.agent_session/plan.md`
+- Update `.agent_session/context.md`
+- Mark todos complete
 
-When something isn't working as expected:
+**Manual testing** (if UI):
+```bash
+bin/dev  # Start server, test at localhost:3000
+```
 
-1. **Rails-specific debugging**:
-   ```bash
-   # Check Rails logs
-   tail -f log/development.log
+## When Stuck
 
-   # Rails console for model testing
-   bin/rails console
-   # Test tenant scoping: ActsAsTenant.current_tenant
+**Debug**:
+```bash
+tail -f log/development.log           # Rails logs
+bin/rails console                      # Test models
+bin/rails dbconsole                    # Database
+```
 
-   # Check database state
-   bin/rails dbconsole
-   ```
+**Spawn agents** if needed:
+- **codebase-analyzer**: Understand existing patterns
+- **model-specialist**: ActiveRecord/business logic
+- **frontend-specialist**: Controllers/views
+- **hotwire-specialist**: Turbo/Stimulus
+- **test-specialist**: Test issues
 
-2. **Use specialized agents** if needed:
-   - **codebase-analyzer**: To understand existing Rails patterns
-   - **model-specialist**: For ActiveRecord and businesslogic issues
-   - **frontend-specialist**: For controllers and views issues
-   - **hotwire-specialist**: For Turbo/Stimulus problems
-   - **test-specialist**: For test problems
+**Report issues**:
+```
+Problema Fase [N]:
+Componente: [Model/Controller/View/Job]
+Errore: [message/behavior]
+File: [paths]
+Come procedere?
+```
 
-3. **Present the Rails-specific issue clearly**:
-   ```
-   Problema di implementazione Rails:
-   Fase: [N]
-   Componente: [Model/Controller/View/Job]
-   Errore: [messaggio di errore o comportamento inaspettato]
-   File coinvolti: [lista dei file Rails]
+## Common Pitfalls
 
-   Come dovrei procedere?
-   ```
-
-## Common Rails Issues
-
-- **Multi-tenancy**: Ensure all queries include tenant scope
-- **N+1 queries**: Use `includes()` for eager loading
-- **Form validation**: Check strong parameters and model validations
-- **Turbo**: Verify correct `data-turbo-method` attributes
-- **Jobs**: Remember `ActsAsTenant.with_tenant(account)` wrapper
+- **Multi-tenancy**: All queries must include tenant scope
+- **N+1 queries**: Eager load with `includes()`
+- **Strong params**: Verify controller parameters
+- **Turbo**: Check `data-turbo-method` attributes
+- **Jobs**: Wrap with `ActsAsTenant.with_tenant(account)`
 
 ## Resuming Work
 
-If the plan has existing checkmarks:
-1. **Check context**: Read `.agent_session/context.md` for status
-2. **Verify completed work**:
-   ```bash
-   # Check migrations ran
-   bin/rails db:migrate:status
+If plan has checkmarks:
+1. Read `.agent_session/context.md` for status
+2. Verify: `bin/rails db:migrate:status` and `bin/rails test`
+3. Start from first unchecked item
+4. Update todos
 
-   # Run tests to ensure nothing is broken
-   bin/rails test
-   ```
-3. **Pick up from first unchecked item**
-4. **Update todos** to reflect current state
+## Philosophy
 
-## Rails Development Tips
+Build Rails features that:
+- Respect multi-tenancy (tenant isolation)
+- Follow conventions (naming, structure)
+- Integrate with Hotwire seamlessly
+- Have comprehensive test coverage
+- Use Pundit for authorization
 
-- **Generator shortcuts**: Use Rails generators when possible
-- **Conventions over configuration**: Follow Rails naming conventions
-- **Test-driven**: Write tests alongside implementation
-- **Security first**: Always use Pundit policies for authorization
-- **Performance**: Consider caching and eager loading from the start
-
-Remember: You're building a Rails feature that respects multi-tenancy, follows conventions, and integrates seamlessly with Hotwire. Quality over speed.
+**Quality over speed**. Implement fully before moving to next phase.

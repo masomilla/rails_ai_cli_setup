@@ -3,182 +3,145 @@ name: doc
 description: Updates documentation in /docs based on changes in the current branch. Analyzes git modifications, understands existing documentation structure, and updates appropriate docs for Rails features, patterns, and integrations.
 ---
 
-# Update Documentation
+Update `/docs` documentation based on git changes. Analyze modifications, follow existing structure, use Italian for text and English for code.
 
-You are tasked with updating documentation in `/docs` based on changes made in the current branch, similar to how other commands work with git analysis.
+## Core Rules
 
-## Rules
-- **CRITICAL**: Read `.agent_session/context.md` for session context if available
-- Analyze git changes to understand what needs documenting
-- Follow existing documentation structure and patterns in `/docs`
-- Use Italian for headings and descriptions, English for code and technical terms
-- Update existing docs rather than create new ones when possible
-- Always update `/docs/README.md` index when adding new files
+1. **Context First**: Read `.agent_session/context.md` if available
+2. **Update Over Create**: Prefer updating existing docs
+3. **Language**: Italian (headings/descriptions), English (code/technical terms/comments)
+4. **Index**: Update `/docs/README.md` when adding files
+5. **Complete Examples**: Functional code with English comments
 
 ## Process
 
-### Step 1: Analyze Changes and Context
+### 1. Analyze Changes
 
-1. **Understand what was implemented:**
-   - Read `.agent_session/context.md` for session context if available
-   - If task description provided, analyze requirements and scope
-   - Run `git status` to see current changes
-   - Run `git diff HEAD~1..HEAD` or appropriate range to see committed changes
-   - Run `git log --oneline -n 10` to see recent commit messages
-
-2. **Identify documentation impact:**
-   - **New Rails features** → `/docs/technical/features/`
-   - **New patterns or architectural decisions** → `/docs/technical/patterns/`
-   - **New integrations** → `/docs/technical/integrations/`
-   - **API changes** → `/docs/api/`
-   - **Business domain changes** → `/docs/business/`
-   - **Development process updates** → `/docs/development/`
-
-### Step 2: Documentation Structure Analysis
-
-1. **Read existing documentation structure:**
-   - Review `/docs/README.md` to understand navigation
-   - Identify which existing documents might need updates
-   - Check related documents in the appropriate directory
-
-2. **Determine documentation approach:**
-   - **Update existing docs**: If feature extends existing functionality
-   - **Create new document**: If entirely new feature/pattern/integration
-   - **Multiple updates**: If changes span multiple areas
-
-### Step 3: Documentation Creation/Update
-
-1. **Read related existing documentation:**
-   - Read completely any existing docs that need updates
-   - Understand current structure, style, and content depth
-   - Identify gaps or outdated information
-
-2. **Create or update documentation:**
-   - Follow existing patterns and structure in `/docs`
-   - Use Rails-specific examples with real domain objects (Contact, Account, etc.)
-   - Include complete, functional code examples with English comments
-   - Start with business context in Italian, then technical details
-
-3. **Quality verification:**
-   - Ensure Italian grammar is correct in descriptions
-   - Verify English technical terms are used appropriately
-   - Test code examples for accuracy
-   - Cross-reference related documents
-   - Update main index if new files are created
-
-### Step 4: Present Documentation Plan
-
-Before making changes, present your analysis and plan:
-```
-📚 Documentation Update Plan
-
-**Changes Detected:**
-- [List of key changes found in git]
-
-**Documentation Impact:**
-- [Existing docs to update: file paths]
-- [New docs to create: file paths and rationale]
-
-**Approach:**
-- [Brief explanation of documentation strategy]
-
-Shall I proceed with updating the documentation?
+**Understand implementation**:
+```bash
+git status
+git diff HEAD~1..HEAD
+git log --oneline -n 10
 ```
 
-## Rails Documentation Structure
+**Read context**: `.agent_session/context.md` if available
 
-The `/docs` directory is organized as follows:
+**Map to documentation**:
+- **Rails features** → `/docs/technical/features/`
+- **Patterns/architectural** → `/docs/technical/patterns/`
+- **Integrations** → `/docs/technical/integrations/`
+- **API changes** → `/docs/api/`
+- **Business domain** → `/docs/business/`
+- **Development process** → `/docs/development/`
 
-### Directory Structure
-- **`/business/`** - Domain overview, features, user roles, glossary
-- **`/architecture/`** - System architecture and design overview
-- **`/technical/`** - Technical implementation details:
-  - **`patterns/`** - Architectural patterns and best practices
-  - **`features/`** - Specific feature implementations
-  - **`integrations/`** - External service integrations
-- **`/api/`** - REST API documentation
-- **`/development/`** - Setup and coding conventions
+### 2. Structure Analysis
 
-### Documentation Mapping for Rails Changes
+**Review existing**:
+- Read `/docs/README.md`
+- Identify docs needing updates
+- Check related documents
 
-**Database changes** (migrations, schema):
-- Update `/docs/technical/features/core-models.md`
-- Update `/docs/technical/patterns/activerecord-patterns.md`
+**Determine approach**:
+- Update existing (if extends functionality)
+- Create new (if entirely new feature)
+- Multiple updates (if spans areas)
 
-**New models or business logic**:
-- Update `/docs/business/domain-overview.md`
-- Create/update docs in `/docs/technical/features/`
+### 3. Create/Update Documentation
 
-**Controller and view changes**:
-- Update `/docs/technical/patterns/hotwire-patterns.md`
-- Update `/docs/technical/patterns/frontend-architecture.md`
+**Read related docs** completely
 
-**Background jobs**:
-- Update `/docs/technical/patterns/background-jobs.md`
+**Write documentation**:
+- Follow existing `/docs` patterns
+- Rails examples with real domain objects (Contact, Account)
+- Complete code with English comments
+- Business context (Italian) → technical details
 
-**External integrations**:
-- Create/update docs in `/docs/technical/integrations/`
+**Verify quality**:
+- Italian grammar correct
+- English technical terms appropriate
+- Code examples accurate
+- Cross-reference related docs
+- Update `/docs/README.md` if new files
 
-**API changes**:
-- Update `/docs/api/rest-api.md`
+### 4. Present Plan
 
-**Multi-tenancy changes**:
-- Update `/docs/technical/features/multi-tenancy-implementation.md`
+```
+📚 Documentation Plan
 
-### When to Document Changes
+Changes:
+- [git changes]
 
-**Document these types of changes:**
-- New Rails features or significant functionality
-- New architectural patterns or design decisions
-- External service integrations
-- API endpoint additions or modifications
-- Multi-tenancy implementation changes
-- New background job patterns
-- Hotwire/Turbo integration patterns
+Impact:
+- Update: [paths]
+- Create: [paths + rationale]
 
-**Skip documentation for:**
-- Standard Rails CRUD operations
-- Framework-default behaviors
+Approach:
+- [strategy]
+
+Proceed?
+```
+
+## Documentation Structure
+
+**Directories**:
+- `/business/` - Domain, features, user roles, glossary
+- `/architecture/` - System architecture
+- `/technical/` - Implementation details
+  - `patterns/` - Architectural patterns
+  - `features/` - Feature implementations
+  - `integrations/` - External services
+- `/api/` - REST API
+- `/development/` - Setup, conventions
+
+**Change Mapping**:
+- **Database** → `/docs/technical/features/core-models.md`, `/patterns/activerecord-patterns.md`
+- **Models/business logic** → `/business/domain-overview.md`, `/technical/features/`
+- **Controllers/views** → `/patterns/hotwire-patterns.md`, `/patterns/frontend-architecture.md`
+- **Background jobs** → `/patterns/background-jobs.md`
+- **Integrations** → `/technical/integrations/`
+- **API** → `/api/rest-api.md`
+- **Multi-tenancy** → `/features/multi-tenancy-implementation.md`
+
+**Document when**:
+- New Rails features
+- Architectural patterns
+- External integrations
+- API modifications
+- Multi-tenancy changes
+- Background job patterns
+- Hotwire integration
+
+**Skip**:
+- Standard CRUD
+- Default behaviors
 - Minor bug fixes
-- Environment-specific configurations
+- Environment configs
 - Temporary implementations
 
-### Documentation Standards
+## Standards
 
-1. **Language Usage:**
-   - Italian for headings, descriptions, and business context
-   - English for code, technical terms, file paths, and ALL code comments
-   - Natural integration of technical English terms in Italian narrative
+**Language**:
+- Italian: headings, descriptions, business context
+- English: code, technical terms, file paths, ALL comments
 
-2. **Content Structure:**
-   - Start with "Panoramica" (Overview) section
-   - Business context first, then technical implementation
-   - Include complete, functional code examples
-   - Use real domain objects (Contact, Account, Integration)
+**Structure**:
+- Start with "Panoramica" (Overview)
+- Business context → technical implementation
+- Complete code examples
+- Real domain objects (Contact, Account)
 
-3. **Code Examples:**
-   - Complete implementations, not fragments
-   - Proper syntax highlighting (ruby, javascript, erb, sql)
-   - English comments in all code
-   - Include error handling and edge cases
+**Code**:
+- Complete, not fragments
+- Syntax highlighting (ruby, javascript, erb, sql)
+- English comments
+- Error handling, edge cases
 
-4. **Cross-referencing:**
-   - Use relative paths: `[text](../folder/file.md)`
-   - Meaningful link text
-   - Update `/docs/README.md` when adding new files
-   - Link to related documents bidirectionally
+**Cross-reference**:
+- Relative paths: `[text](../folder/file.md)`
+- Update `/docs/README.md` for new files
 
-## Execution Guidelines
+## Feature Documentation Template
 
-1. **Always get user confirmation** before making documentation changes
-2. **Update existing documents** when possible rather than creating new ones
-3. **Follow existing patterns** in the documentation structure
-4. **Test code examples** for accuracy
-5. **Save documentation** directly to appropriate `/docs` subdirectories
-
-## Common Rails Documentation Patterns
-
-### For New Features:
 ```markdown
 # Nome Funzionalità
 
@@ -195,14 +158,4 @@ The `/docs` directory is organized as follows:
 [Performance, security, multi-tenancy notes]
 ```
 
-### For Integration Updates:
-- Update existing integration docs with new endpoints or functionality
-- Add authentication or configuration changes
-- Include new error handling or retry logic
-
-### For Pattern Documentation:
-- Document the pattern with real Rails examples
-- Explain when to use vs. when not to use
-- Include performance and maintenance considerations
-
-Remember: Documentation should help developers understand both the "what" and the "why" of implementations, using real project examples and maintaining consistency with existing docs.
+**Goal**: Help developers understand "what" and "why" using real project examples.

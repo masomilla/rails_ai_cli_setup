@@ -3,242 +3,201 @@ name: ux-review
 description: Conducts comprehensive design review on Rails UI changes using Playwright for automated testing. Reviews visual consistency, accessibility compliance, responsive design, and Rails-specific patterns like Turbo Frames and Stimulus controllers.
 ---
 
-# UX Design Review
+Comprehensive UI review using Playwright for live testing. Check visual consistency, accessibility, responsive design, and Rails/Hotwire patterns.
 
-You are tasked with conducting a comprehensive design review on UI changes in the Rails application, following world-class standards and testing actual user experience with live interaction.
+## Core Rules
 
-## Rules
-- **CRITICAL**: Always test live environment first - prioritize actual user experience over static analysis
-- Follow Rails UI patterns and Hotwire integration standards
-- Use Playwright tools for automated interaction testing
-- Focus on problems and their impact, not technical solutions
-- Categorize all findings with severity levels
+1. **Live Testing First**: Test actual user experience before static analysis
+2. **Rails UI Patterns**: Verify Hotwire integration (Turbo/Stimulus)
+3. **Accessibility**: WCAG 2.1 AA compliance
+4. **Categorize Findings**: Blockers, High Priority, Suggestions, Nitpicks
+5. **Evidence-Based**: Screenshots for visual issues
 
 ## Process
 
-### Step 1: Preparation & Context
+### 1. Preparation
 
-1. **Understand what was implemented:**
-   - Read `.agent_session/context.md` for session context if available
-   - If PR number provided, use:
-     ```bash
-     GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh pr view [number]
-     ```
-   - Note: The token is stored in 1Password, ensure it's unlocked on desktop
-   - If task description provided, analyze UI scope and changes
-   - Run `git diff HEAD~1..HEAD` to understand code changes
+**Understand changes**:
+- Read `.agent_session/context.md` or PR via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh pr view [number]`
+- Check `app/views/`, `app/javascript/controllers/`, controllers
+- Run `git diff HEAD~1..HEAD`
 
-2. **Identify UI components changed:**
-   - **Views**: Check `app/views/` for ERB template changes
-   - **JavaScript**: Review `app/javascript/controllers/` for Stimulus controllers
-   - **Styles**: Check CSS/Tailwind changes
-   - **Controllers**: Review controller actions that render views
+**Setup environment**:
+```bash
+bin/dev  # Ensure server running
+```
+```javascript
+mcp__playwright__browser_resize(1440, 900)
+mcp__playwright__browser_navigate("http://localhost:3000/[path]")
+```
 
-3. **Set up test environment:**
-   - Ensure Rails server is running: `bin/dev` or `bin/rails server`
-   - Configure initial viewport: `mcp__playwright__browser_resize(1440, 900)`
-   - Navigate to the affected pages
+### 2. Rails UI Testing
 
-### Step 2: Rails-Specific UI Testing
+**Test patterns**:
+- **Turbo Frames**: Load without full page refresh
+- **Turbo Streams**: Form submissions, dynamic updates
+- **Stimulus**: JavaScript behaviors
+- **Italian locale**: UI text localization
 
-1. **Navigate to affected pages:**
-   ```
-   Use mcp__playwright__browser_navigate to visit:
-   - Main feature pages that were modified
-   - Related pages that might be affected
-   - Forms and interactive elements
-   ```
+**Test workflows**:
+- Complete primary user flows
+- Form submissions and validations
+- Error/success messages
+- Multi-tenant data isolation
 
-2. **Test Rails UI patterns:**
-   - **Turbo Frame updates**: Verify frames load correctly without full page refresh
-   - **Turbo Stream responses**: Test form submissions and dynamic updates
-   - **Stimulus controllers**: Verify JavaScript behaviors work properly
-   - **Italian locale**: Check that UI text is properly localized
+### 3. Interactive States
 
-3. **Test user workflows:**
-   - Complete primary user flows mentioned in context/PR
-   - Test form submissions and validations
-   - Verify error states and success messages
-   - Test multi-tenant data isolation (if applicable)
+**Test elements** with Playwright:
+```javascript
+mcp__playwright__browser_hover(element)    // Hover states
+mcp__playwright__browser_click(element)    // Active states
+```
 
-### Step 3: Interactive States Testing
+**Rails interactions**:
+- Forms with `data-turbo-method`
+- Confirmation dialogs
+- File uploads
+- Search and filters
 
-1. **Test all interactive elements:**
-   ```
-   For each button, link, form field:
-   - Use mcp__playwright__browser_hover for hover states
-   - Use mcp__playwright__browser_click for active states
-   - Test disabled states if applicable
-   - Verify loading states for async operations
-   ```
+### 4. Responsive Design
 
-2. **Test Rails-specific interactions:**
-   - Form submissions with `data-turbo-method`
-   - Confirmation dialogs for destructive actions
-   - File uploads if present
-   - Search and filter functionality
+**Test viewports**:
+```javascript
+// Desktop
+mcp__playwright__browser_resize(1440, 900)
+mcp__playwright__browser_take_screenshot()
 
-### Step 4: Responsive Design Testing
+// Tablet
+mcp__playwright__browser_resize(768, 1024)
 
-1. **Test multiple viewports:**
-   ```
-   Desktop (1440px): mcp__playwright__browser_resize(1440, 900)
-   - Take screenshot: mcp__playwright__browser_take_screenshot()
-   - Verify all elements are visible and properly spaced
+// Mobile
+mcp__playwright__browser_resize(375, 667)
+```
 
-   Tablet (768px): mcp__playwright__browser_resize(768, 1024)
-   - Test layout adaptation
-   - Verify navigation remains usable
+**Check**:
+- Layout adaptation
+- Touch-friendly interactions
+- No horizontal scrolling
+- Turbo Frame behavior on mobile
 
-   Mobile (375px): mcp__playwright__browser_resize(375, 667)
-   - Ensure touch-friendly interactions
-   - Check no horizontal scrolling
-   - Verify mobile menu functionality
-   ```
+### 5. Visual Assessment
 
-2. **Rails responsive considerations:**
-   - Check Turbo Frame behavior on mobile
-   - Verify forms are mobile-friendly
-   - Test modal dialogs on small screens
+**Capture & analyze**:
+```javascript
+mcp__playwright__browser_take_screenshot({fullPage: true})
+```
 
-### Step 5: Visual Design Assessment
+**Check consistency**:
+- Spacing and alignment
+- Typography hierarchy
+- Color contrast
+- Visual hierarchy
 
-1. **Capture screenshots for analysis:**
-   - Take full-page screenshots: `mcp__playwright__browser_take_screenshot(fullPage: true)`
-   - Capture key interactions and states
+### 6. Accessibility (WCAG 2.1 AA)
 
-2. **Assess visual consistency:**
-   - **Spacing**: Check consistency with Rails application design system
-   - **Typography**: Verify font hierarchy and readability
-   - **Colors**: Ensure proper contrast and brand consistency
-   - **Alignment**: Check grid alignment and element positioning
-   - **Visual hierarchy**: Verify important elements stand out
+**Keyboard navigation**:
+```javascript
+mcp__playwright__browser_press_key("Tab")  // Navigate
+```
 
-### Step 6: Accessibility Testing (WCAG 2.1 AA)
+**Verify**:
+- Focus states visible
+- Form labels associated
+- Error message associations
+- Semantic HTML structure
 
-1. **Keyboard navigation:**
-   ```
-   Test complete keyboard navigation:
-   - Use mcp__playwright__browser_press_key("Tab") to navigate
-   - Verify focus states are visible
-   - Test Enter/Space activation
-   - Check escape key functionality for modals
-   ```
+**DOM analysis**:
+```javascript
+mcp__playwright__browser_snapshot()  // Accessibility check
+```
 
-2. **Rails accessibility patterns:**
-   - Check form labels are properly associated
-   - Verify Rails form helpers include proper attributes
-   - Test error message associations
-   - Check Italian locale accessibility
+### 7. Error Checking
 
-3. **Use accessibility snapshot:**
-   ```
-   mcp__playwright__browser_snapshot() for DOM analysis
-   - Check semantic HTML structure
-   - Verify ARIA attributes where needed
-   - Check color contrast ratios
-   ```
+**Console errors**:
+```javascript
+mcp__playwright__browser_console_messages()
+```
 
-### Step 7: Content & Error Checking
+**Content review**:
+- Italian text grammar
+- No placeholder/debug content
 
-1. **Content review:**
-   - Check Italian text for grammar and clarity
-   - Verify proper terminology usage
-   - Check for placeholder text or debug content
+### 8. Edge Cases
 
-2. **Console error checking:**
-   ```
-   mcp__playwright__browser_console_messages()
-   - Check for JavaScript errors
-   - Verify no Rails asset errors
-   - Look for accessibility warnings
-   ```
+**Test scenarios**:
+- Empty states
+- Error states (validation)
+- Loading states
+- Content overflow
+- Multi-tenant data
+- Large datasets
+- Complex validations
 
-### Step 8: Rails Performance & Edge Cases
-
-1. **Test edge cases:**
-   - Empty states (no data)
-   - Error states (validation failures)
-   - Loading states (slow connections)
-   - Content overflow scenarios
-
-2. **Rails-specific edge cases:**
-   - Multi-tenant data edge cases
-   - Large datasets in tables/lists
-   - Complex form validations
-   - Background job status updates
-
-## Report Structure
-
-Present findings in this format:
+## Report Format
 
 ```markdown
-# Design Review: [Feature Name]
+# UX Review: [Feature]
 
 ## Summary
-[Positive opening about what works well, overall assessment]
+[What works well, overall assessment]
 
 ## Test Environment
-- **Pages tested**: [list of URLs/routes tested]
+- **Pages**: [URLs/routes]
 - **Viewports**: Desktop (1440px), Tablet (768px), Mobile (375px)
-- **Rails patterns tested**: [Turbo Frames, Stimulus controllers, etc.]
+- **Rails patterns**: [Turbo Frames, Stimulus, etc.]
 
 ## Findings
 
 ### 🚫 Blockers
-Critical issues that must be fixed before merge:
-- [Problem description + screenshot if applicable]
+[Critical issues, must fix before merge]
 
 ### ⚠️ High Priority
-Significant issues to address before merge:
-- [Problem description + screenshot if applicable]
+[Significant issues to address]
 
-### 💡 Medium Priority / Suggestions
-Improvements for future consideration:
-- [Problem description]
+### 💡 Suggestions
+[Future improvements]
 
 ### 🔍 Nitpicks
-Minor aesthetic details:
-- Nit: [Minor issue]
+[Minor aesthetic details]
 
-## Rails-Specific Notes
-- **Turbo Frame performance**: [assessment]
-- **Stimulus controller behavior**: [assessment]
-- **Multi-tenant data display**: [verification]
-- **Italian localization**: [assessment]
+## Rails-Specific
+- **Turbo Frames**: [performance]
+- **Stimulus**: [behavior]
+- **Multi-tenancy**: [data isolation]
+- **Locale**: [Italian text quality]
 
-## Accessibility Compliance
-- **Keyboard navigation**: [Pass/Fail with details]
-- **Focus management**: [assessment]
-- **Screen reader compatibility**: [assessment]
-- **Color contrast**: [Pass/Fail]
+## Accessibility
+- **Keyboard**: [Pass/Fail]
+- **Focus**: [assessment]
+- **Screen reader**: [assessment]
+- **Contrast**: [Pass/Fail]
 
 ## Screenshots
-[Include relevant screenshots for visual issues]
+[Visual evidence]
 ```
 
-## Quality Standards for Rails UI
+## Quality Standards
 
-### Rails-Specific Checks:
-- **Turbo behavior**: Frames update without full page refresh
-- **Stimulus integration**: JavaScript behaviors work correctly
-- **Form handling**: Proper validation and error display
-- **Multi-tenancy**: Data isolation is maintained
-- **Performance**: No N+1 queries causing UI lag
+**Rails checks**:
+- Turbo Frames update without full refresh
+- Stimulus behaviors work
+- Form validation/error display
+- Multi-tenant data isolation
+- No N+1 queries causing lag
 
-### Design Standards:
-- **Visual consistency**: Follows application design system
-- **Responsive design**: Works on all viewport sizes
-- **Accessibility**: WCAG 2.1 AA compliance
-- **User experience**: Intuitive and efficient workflows
-- **Content quality**: Clear, grammatically correct Italian text
+**Design standards**:
+- Visual consistency
+- Responsive design
+- WCAG 2.1 AA compliance
+- Intuitive workflows
+- Clear Italian text
 
-## Important Guidelines:
+## Guidelines
 
-1. **Focus on user impact**: Describe how issues affect the user experience
-2. **Provide evidence**: Use screenshots for visual issues
-3. **Be constructive**: Assume good intent, offer helpful feedback
-4. **Balance quality with delivery**: Distinguish between blockers and nice-to-haves
-5. **Test real scenarios**: Use actual data and workflows when possible
+- Focus on user impact
+- Provide screenshot evidence
+- Be constructive
+- Balance quality with delivery
+- Test real scenarios
 
-Remember: Your goal is to ensure the highest quality user experience while respecting Rails conventions and the application's multi-tenant architecture.
+**Goal**: Highest quality UX respecting Rails conventions and multi-tenancy.
