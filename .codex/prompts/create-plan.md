@@ -1,4 +1,8 @@
+---
 description: Draft a detailed implementation plan for a Rails task using repo research (Codex)
+arguments:
+  - name: issue
+    description: Issue number (e.g., 123) or pasted issue text; optional.
 ---
 
 # Create Implementation Plan (Codex)
@@ -20,7 +24,8 @@ Ti aiutero a creare un piano di implementazione dettagliato. Dimmi:
 
 ## Process
 1. **Intake**:
-   - If a GitHub issue number is passed to the command, immediately read it via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]` and capture key details (requirements, acceptance criteria, constraints). No prompt is needed.
+   - If the argument is a GitHub issue number, immediately read it via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]` and capture key details (requirements, acceptance criteria, constraints). No prompt is needed.
+   - If the argument is free text, treat it as the issue description and extract requirements/acceptance criteria.
    - If no issue is provided, ask for details using the default prompt.
 2. **Research**: scan the repo (controllers/models/views/jobs/tests) using `rg` and read full files that match. Note existing patterns and risks.
 3. **Design options**: outline current behavior vs desired outcome, list possible approaches with pros/cons, and resolve open questions with the user when needed.
