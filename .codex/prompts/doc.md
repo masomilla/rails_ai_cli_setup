@@ -12,7 +12,12 @@ Refresh documentation in `/docs` to match current work.
 - Prefer updating existing docs; if adding files, update `/docs/README.md` index.
 
 ## Process
-1. **Understand changes**: run `git status`, inspect diffs/commits, and review context/plan files.
+1. **Understand changes**:
+   - If `.agent_session/plan.md` exists, use it to determine scope; no need to diff against main.
+   - Otherwise, detect branch:
+     - On a feature branch: `git fetch origin` then inspect `git diff --stat origin/main...HEAD` and `git log --oneline origin/main...HEAD` to see what changed.
+     - On `main`: inspect recent commits (e.g., `git log -5 --oneline`) to find what was merged.
+   - Also run `git status` to catch unstaged changes.
 2. **Identify targets** (examples):
    - Features → `/docs/technical/features/`
    - Patterns/architecture → `/docs/technical/patterns/`
