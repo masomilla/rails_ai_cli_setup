@@ -1,5 +1,8 @@
 ---
 description: Creates comprehensive blog post documenting implemented features with screenshots and Italian text. Uses Playwright for screenshots and ImageMagick for processing.
+arguments:
+  - name: issue
+    description: Issue number (e.g., 123) or pasted issue text; optional.
 ---
 
 Create blog post for implemented feature with screenshots and Italian text. Use Playwright for capture, ImageMagick for processing.
@@ -12,6 +15,11 @@ Create blog post for implemented feature with screenshots and Italian text. Use 
 - User logged in at localhost:3000
 
 ## Process
+
+### 0. Input
+- If the argument is a GitHub issue number, read it via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]` to gather requirements/value points.
+- If the argument is free text, treat it as the issue description.
+- If no argument is provided, infer the feature from changes vs main: `git fetch origin`, then inspect `git diff origin/main...HEAD` (files and commit messages) to understand what to document.
 
 ### 1. Plan Content Structure
 
