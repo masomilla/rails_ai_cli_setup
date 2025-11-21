@@ -7,7 +7,11 @@ description: Prepare and create a pull request for recent changes with proper su
 Open a PR summarizing completed work.
 
 ## Process
-1. **Review work**: read `.agent_session/plan.md` (if present), run `git status`, inspect diffs/commits to understand the changes.
+1. **Review work**: read `.agent_session/plan.md` (if present), run `git status`, and inspect diffs vs main:
+   - `git fetch origin`
+   - `git diff --stat origin/main...HEAD`
+   - `git log --oneline origin/main...HEAD`
+   Use these to understand what changed and group the summary.
 2. **Branch/PR status**: confirm current branch (`git branch --show-current`) is not main. Check for existing PR with `gh pr view`; if one exists, ask whether to update instead.
 3. **Draft PR**:
    - Propose a concise title.
