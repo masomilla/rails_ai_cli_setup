@@ -5,6 +5,29 @@ description: Updates documentation in /docs based on changes in the current bran
 
 Update `/docs` documentation based on git changes. Analyze modifications, follow existing structure, use Italian for text and English for code.
 
+## Usage
+
+```bash
+/doc [issue-id|description]
+```
+
+**Parameters:**
+- `issue-id` (optional): GitHub issue number (e.g., `456`) - will fetch feature details using `gh issue view`
+- `description` (optional): Free text description of the changes to document
+
+**Examples:**
+```bash
+/doc 456                                  # Document changes from GitHub issue #456
+/doc                                      # Auto-detect from context (plan.md or git diff)
+/doc Add calendar sync feature           # Document changes from text description
+```
+
+**Information Source Priority:**
+1. **GitHub Issue** - If issue ID provided: `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]`
+2. **Text Description** - If free text provided: Use as changes description
+3. **Implementation Plan** - Check `.agent_session/plan.md` AND `.agent_session/context.md` for feature details and context
+4. **Git Diff** - Fallback: `git diff main...HEAD` to understand changes
+
 ## Core Rules
 
 1. **Context First**: Read `.agent_session/context.md` if available

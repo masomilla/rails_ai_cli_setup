@@ -5,6 +5,23 @@ description: Reads a GitHub issue or task description for a bug, creates an impl
 
 Fix bugs in Rails by reading issue, investigating root cause, and implementing tested solution in streamlined workflow.
 
+## Usage
+
+```bash
+/fix-bug [issue-id|description]
+```
+
+**Parameters:**
+- `issue-id` (optional): GitHub issue number (e.g., `123`) - will fetch issue details using `gh issue view`
+- `description` (optional): Free text description of the bug to fix
+
+**Examples:**
+```bash
+/fix-bug 789                                    # Fix bug from GitHub issue #789
+/fix-bug                                         # Interactive mode - will ask for details
+/fix-bug Contact form validation not working    # Fix bug from text description
+```
+
 ## Core Rules
 
 1. **Context First**: Create/update `.agent_session/context.md` throughout process

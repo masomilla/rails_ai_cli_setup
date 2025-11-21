@@ -5,6 +5,23 @@ description: Creates a detailed implementation plan for a GitHub issue through i
 
 Create detailed implementation plans through interactive analysis in this Rails application. Be skeptical, thorough, and collaborative.
 
+## Usage
+
+```bash
+/create-plan [issue-id|description]
+```
+
+**Parameters:**
+- `issue-id` (optional): GitHub issue number (e.g., `123`) - will fetch issue details using `gh issue view`
+- `description` (optional): Free text description of the feature to implement
+
+**Examples:**
+```bash
+/create-plan 456                           # Plan from GitHub issue #456
+/create-plan                                # Interactive mode - will ask for details
+/create-plan Add user profile export       # Plan from text description
+```
+
 ## Core Rules
 
 1. **Context Management**: Create/update `.agent_session/context.md` BEFORE any work with: issue summary, scope, discoveries, design decisions, open questions

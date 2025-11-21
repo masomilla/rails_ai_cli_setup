@@ -19,7 +19,7 @@ Create blog post for implemented feature with screenshots and Italian text. Use 
 ### 0. Input
 - If the argument is a GitHub issue number, read it via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]` to gather requirements/value points.
 - If the argument is free text, treat it as the issue description.
-- If no argument is provided, infer the feature from changes vs main: `git fetch origin`, then inspect `git diff origin/main...HEAD` (files and commit messages) to understand what to document.
+- If no argument is provided, check for `.agent_session/plan.md` to understand scope and value; if absent, infer the feature from changes vs main: `git fetch origin`, then inspect `git diff origin/main...HEAD` (files and commit messages) to understand what to document.
 
 ### 1. Plan Content Structure
 

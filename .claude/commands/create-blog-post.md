@@ -5,6 +5,29 @@ description: Creates comprehensive blog post documenting implemented features wi
 
 Create blog post for implemented feature with screenshots and Italian text. Use Playwright for capture, ImageMagick for processing.
 
+## Usage
+
+```bash
+/create-blog-post [issue-id|description]
+```
+
+**Parameters:**
+- `issue-id` (optional): GitHub issue number (e.g., `961`) - will fetch feature details using `gh issue view`
+- `description` (optional): Free text description of the feature to document
+
+**Examples:**
+```bash
+/create-blog-post 961                              # Document feature from GitHub issue #961
+/create-blog-post                                   # Auto-detect from context (plan.md or git diff)
+/create-blog-post Event reminder system            # Document feature from text description
+```
+
+**Information Source Priority:**
+1. **GitHub Issue** - If issue ID provided: `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]`
+2. **Text Description** - If free text provided: Use as feature description
+3. **Implementation Plan** - Check `.agent_session/plan.md` AND `.agent_session/context.md` for feature details and context
+4. **Git Diff** - Fallback: `git diff main...HEAD` to understand changes
+
 ## Prerequisites
 
 - Feature implemented and merged
