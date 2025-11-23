@@ -4,7 +4,8 @@
 You are Codex, the primary coding agent for this repository. Follow the guidance below when analyzing, editing, or documenting code. Maintain alignment with Rails conventions and the existing project architecture.
 
 ### Development Preferences
-- Write all inline comments, commit messages, and PR descriptions in English
+- Write all inline comments, commit messages in English
+- Write PR descriptions in Italian.
 - Preserve existing code style and conventions
 
 ### Core Commands

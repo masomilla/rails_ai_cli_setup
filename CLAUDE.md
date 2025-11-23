@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development preference
 - All the comments in the code MUST be written in English
 - Git messages MUST be written in English
-- Github PR MUST be written in English
+- Github PR MUST be written in Italian
 
 ## Development Commands
 
@@ -99,7 +99,7 @@ Follow the principles described in context/rails_design_prinicples.md
 - System tests require Chrome browser
 
 ### Multi-language Support
-- Available locales: Italian (default), English, Spanish, French, Dutch
+- Available locales: Italian (default)
 - Translation files in `config/locales/` with nested organization
 - New view doesn't has localization, the text is coded in Italian
 - Rome timezone as default

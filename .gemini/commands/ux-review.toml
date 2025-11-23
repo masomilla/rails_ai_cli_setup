@@ -1,0 +1,221 @@
+description = "Conducts comprehensive design review on Rails UI changes using Playwright for automated testing. Reviews visual consistency, accessibility compliance, responsive design, and Rails-specific patterns like Turbo Frames and Stimulus controllers."
+prompt = """
+Comprehensive UI review using Playwright for live testing. Check visual consistency, accessibility, responsive design, and Rails/Hotwire patterns.
+
+## Core Rules
+
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Live Testing First**: Test actual user experience before static analysis
+4. **Rails UI Patterns**: Verify Hotwire integration (Turbo/Stimulus)
+5. **Accessibility**: WCAG 2.1 AA compliance
+6. **Categorize Findings**: Blockers, High Priority, Suggestions, Nitpicks
+7. **Evidence-Based**: Screenshots for visual issues
+
+## Process
+
+### 1. Context Sync & Preparation
+
+**Context sync**: Ensure `.agent_session/context.md` exists (create with template below if not), read it closely, and capture prior decisions or TODOs before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
+
+**Understand changes**:
+- Check PR via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh pr view [number]` if applicable
+- Check `app/views/`, `app/javascript/controllers/`, controllers
+- Run `git diff HEAD~1..HEAD`
+
+**Setup environment**:
+```bash
+bin/dev  # Ensure server running
+```
+```javascript
+mcp__playwright__browser_resize(1440, 900)
+mcp__playwright__browser_navigate("http://localhost:3000/[path]")
+```
+
+### 2. Rails UI Testing
+
+**Test patterns**:
+- **Turbo Frames**: Load without full page refresh
+- **Turbo Streams**: Form submissions, dynamic updates
+- **Stimulus**: JavaScript behaviors
+- **Italian locale**: UI text localization
+
+**Test workflows**:
+- Complete primary user flows
+- Form submissions and validations
+- Error/success messages
+- Multi-tenant data isolation
+
+### 3. Interactive States
+
+**Test elements** with Playwright:
+```javascript
+mcp__playwright__browser_hover(element)    // Hover states
+mcp__playwright__browser_click(element)    // Active states
+```
+
+**Rails interactions**:
+- Forms with `data-turbo-method`
+- Confirmation dialogs
+- File uploads
+- Search and filters
+
+### 4. Responsive Design
+
+**Test viewports**:
+```javascript
+// Desktop
+mcp__playwright__browser_resize(1440, 900)
+mcp__playwright__browser_take_screenshot()
+
+// Tablet
+mcp__playwright__browser_resize(768, 1024)
+
+// Mobile
+mcp__playwright__browser_resize(375, 667)
+```
+
+**Check**:
+- Layout adaptation
+- Touch-friendly interactions
+- No horizontal scrolling
+- Turbo Frame behavior on mobile
+
+### 5. Visual Assessment
+
+**Capture & analyze**:
+```javascript
+mcp__playwright__browser_take_screenshot({fullPage: true})
+```
+
+**Check consistency**:
+- Spacing and alignment
+- Typography hierarchy
+- Color contrast
+- Visual hierarchy
+
+### 6. Accessibility (WCAG 2.1 AA)
+
+**Keyboard navigation**:
+```javascript
+mcp__playwright__browser_press_key("Tab")  // Navigate
+```
+
+**Verify**:
+- Focus states visible
+- Form labels associated
+- Error message associations
+- Semantic HTML structure
+
+**DOM analysis**:
+```javascript
+mcp__playwright__browser_snapshot()  // Accessibility check
+```
+
+### 7. Error Checking
+
+**Console errors**:
+```javascript
+mcp__playwright__browser_console_messages()
+```
+
+**Content review**:
+- Italian text grammar
+- No placeholder/debug content
+
+### 8. Edge Cases
+
+**Test scenarios**:
+- Empty states
+- Error states (validation)
+- Loading states
+- Content overflow
+- Multi-tenant data
+- Large datasets
+- Complex validations
+
+## Report Format
+
+```markdown
+# UX Review: [Feature]
+
+## Summary
+[What works well, overall assessment]
+
+## Test Environment
+- **Pages**: [URLs/routes]
+- **Viewports**: Desktop (1440px), Tablet (768px), Mobile (375px)
+- **Rails patterns**: [Turbo Frames, Stimulus, etc.]
+
+## Findings
+
+### 🚫 Blockers
+[Critical issues, must fix before merge]
+
+### ⚠️ High Priority
+[Significant issues to address]
+
+### 💡 Suggestions
+[Future improvements]
+
+### 🔍 Nitpicks
+[Minor aesthetic details]
+
+## Rails-Specific
+- **Turbo Frames**: [performance]
+- **Stimulus**: [behavior]
+- **Multi-tenancy**: [data isolation]
+- **Locale**: [Italian text quality]
+
+## Accessibility
+- **Keyboard**: [Pass/Fail]
+- **Focus**: [assessment]
+- **Screen reader**: [assessment]
+- **Contrast**: [Pass/Fail]
+
+## Screenshots
+[Visual evidence]
+```
+
+**Update `.agent_session/context.md`**:
+- Document review findings in Overview section
+- Add UX issues to TODO section
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] ux-review: reviewed [pages], [N] issues found`
+
+## Quality Standards
+
+**Rails checks**:
+- Turbo Frames update without full refresh
+- Stimulus behaviors work
+- Form validation/error display
+- Multi-tenant data isolation
+- No N+1 queries causing lag
+
+**Design standards**:
+- Visual consistency
+- Responsive design
+- WCAG 2.1 AA compliance
+- Intuitive workflows
+- Clear Italian text
+
+## Guidelines
+
+- Focus on user impact
+- Provide screenshot evidence
+- Be constructive
+- Balance quality with delivery
+- Test real scenarios
+
+**Goal**: Highest quality UX respecting Rails conventions and multi-tenancy.
+"""
