@@ -10,6 +10,19 @@ arguments:
 Build a practical plan for a Rails change by gathering context, researching the codebase, and writing an actionable document.
 
 ## Rules
+- Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with:
+```
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+- 
+## TODO
+- 
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
+- After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
 - Read referenced issues/docs/files fully; prefer `rg` for searches.
 - Follow Rails conventions, multi-tenancy patterns, and AGENTS.md guidance.
 - Use Italian for user-facing plan text when appropriate; keep code/comments in English.
@@ -23,13 +36,14 @@ Ti aiutero a creare un piano di implementazione dettagliato. Dimmi:
 ```
 
 ## Process
-1. **Intake**:
+1. **Context sync**: ensure `.agent_session/context.md` exists (create with the template above if not), read it closely, and capture prior decisions or TODOs before acting.
+2. **Intake**:
    - If the argument is a GitHub issue number, immediately read it via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]` and capture key details (requirements, acceptance criteria, constraints). No prompt is needed.
    - If the argument is free text, treat it as the issue description and extract requirements/acceptance criteria.
    - If no issue is provided, ask for details using the default prompt.
-2. **Research**: scan the repo (controllers/models/views/jobs/tests) using `rg` and read full files that match. Note existing patterns and risks.
-3. **Design options**: outline current behavior vs desired outcome, list possible approaches with pros/cons, and resolve open questions with the user when needed.
-4. **Write the plan** to `.agent_session/plan.md` using this structure:
+3. **Research**: scan the repo (controllers/models/views/jobs/tests) using `rg` and read full files that match. Note existing patterns and risks.
+4. **Design options**: outline current behavior vs desired outcome, list possible approaches with pros/cons, and resolve open questions with the user when needed.
+5. **Write the plan** to `.agent_session/plan.md` using this structure:
 ```
 # Piano di Implementazione [Titolo]
 
@@ -59,4 +73,5 @@ Ti aiutero a creare un piano di implementazione dettagliato. Dimmi:
 ## Rischi e Open Questions
 - Rischi residui e decisioni aperte (idealmente vuoto al termine)
 ```
-5. **Review with user**: share the plan location, call out assumptions/risks, and wait for approval before implementation.
+6. **Update context**: summarize plan highlights, decisions, and open items in `.agent_session/context.md` and append a dated log entry for this run.
+7. **Review with user**: share the plan location, call out assumptions/risks, and wait for approval before implementation.

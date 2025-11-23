@@ -7,6 +7,21 @@ arguments:
 
 Create blog post for implemented feature with screenshots and Italian text. Use Playwright for capture, ImageMagick for processing.
 
+## Context log
+- Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with:
+```
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+- 
+## TODO
+- 
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
+- After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+
 ## Prerequisites
 
 - Feature implemented and merged
@@ -15,6 +30,9 @@ Create blog post for implemented feature with screenshots and Italian text. Use 
 - User logged in at localhost:3000
 
 ## Process
+
+### -1. Context sync
+- Ensure `.agent_session/context.md` exists (create with the template above if not), read it closely, and capture prior decisions or TODOs before acting.
 
 ### 0. Input
 - If the argument is a GitHub issue number, read it via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]` to gather requirements/value points.
@@ -157,6 +175,7 @@ git add app/views/blog_posts/posts/_[slug].html.erb \
 
 git commit -m "Add blog post: [feature]"
 ```
+- Update `.agent_session/context.md` with blog post details, decisions, assets added, and next steps, then append a dated log entry.
 
 ## Tips
 
