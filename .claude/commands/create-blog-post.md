@@ -28,6 +28,12 @@ Create blog post for implemented feature with screenshots and Italian text. Use 
 3. **Implementation Plan** - Check `.agent_session/plan.md` AND `.agent_session/context.md` for feature details and context
 4. **Git Diff** - Fallback: `git diff main...HEAD` to understand changes
 
+## Core Rules
+
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Plan Reference**: Check `.agent_session/plan.md` if available to determine scope; skip diffing against main if plan exists.
+
 ## Prerequisites
 
 - Feature implemented and merged
@@ -36,6 +42,21 @@ Create blog post for implemented feature with screenshots and Italian text. Use 
 - User logged in at localhost:3000
 
 ## Process
+
+### 0. Context Sync
+
+**Ensure `.agent_session/context.md` exists** (create with template below if not), read it closely, and capture prior decisions or TODOs before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
 
 ### 1. Plan Content Structure
 
@@ -163,7 +184,7 @@ yarn build && yarn build:css
 - [ ] No broken layouts
 - [ ] Appears in index
 
-### 7. Cleanup & Commit
+### 7. Cleanup, Update Context & Commit
 
 ```bash
 rm -rf .playwright-mcp/*.png
@@ -173,6 +194,11 @@ git add app/views/blog_posts/posts/_[slug].html.erb \
 
 git commit -m "Add blog post: [feature]"
 ```
+
+**Update `.agent_session/context.md`**:
+- Document blog post creation in Overview section
+- Note blog post slug and assets in Decisions section
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] create-blog-post: created blog post [slug], [N] screenshots`
 
 ## Tips
 

@@ -7,16 +7,30 @@ Implement approved technical plans for Rails features. Follow conventions, ensur
 
 ## Core Rules
 
-1. **Context First**: Read `.agent_session/context.md` and `.agent_session/plan.md` before starting
-2. **Rails Way**: Follow Fat Models, Skinny Controllers, RESTful routes
-3. **Multi-tenancy**: `acts_as_tenant(:account)` on all models
-4. **Test Coverage**: Write tests for all functionality
-5. **Track Progress**: Use TodoWrite and update checkboxes in plan/context
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Plan Reference**: Read `.agent_session/plan.md` fully before coding and update checkboxes as phases complete.
+4. **Rails Way**: Follow Fat Models, Skinny Controllers, RESTful routes
+5. **Multi-tenancy**: `acts_as_tenant(:account)` on all models
+6. **Test Coverage**: Write tests for all functionality
+7. **Track Progress**: Use TodoWrite and update checkboxes in plan/context
 
 ## Getting Started
 
+**Context sync**: Ensure `.agent_session/context.md` exists (create with template below if not), read it closely, and capture any relevant notes before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
+
 **Read files**:
-- `.agent_session/context.md` - implementation status
 - `.agent_session/plan.md` - phases and success criteria
 - Check existing checkmarks `- [x]` for completed work
 
@@ -81,7 +95,8 @@ bearer scan .                                   # Security
 
 **Update progress**:
 - Check items in `.agent_session/plan.md`
-- Update `.agent_session/context.md`
+- Update `.agent_session/context.md` sections (Overview/Decisions/TODO)
+- Append dated log entry with phase results
 - Mark todos complete
 
 **Manual testing** (if UI):

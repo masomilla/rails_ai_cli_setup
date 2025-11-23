@@ -24,40 +24,29 @@ Create detailed implementation plans through interactive analysis in this Rails 
 
 ## Core Rules
 
-1. **Context Management**: Create/update `.agent_session/context.md` BEFORE any work with: issue summary, scope, discoveries, design decisions, open questions
-2. **Read Fully**: Always read files completely (no limits/offsets) before making decisions
-3. **No Unresolved Questions**: Final plan must have zero open questions - research or ask immediately
-4. **Parallel Work**: Spawn multiple specialized agents concurrently for efficiency
-5. **Track Progress**: Use TodoWrite to track planning tasks
-6. **Service Object**: No service object, use insted Concern or PORO 
+1. **Context Management**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Read Fully**: Always read files completely (no limits/offsets) before making decisions
+4. **No Unresolved Questions**: Final plan must have zero open questions - research or ask immediately
+5. **Parallel Work**: Spawn multiple specialized agents concurrently for efficiency
+6. **Track Progress**: Use TodoWrite to track planning tasks
+7. **Service Object**: No service object, use instead Concern or PORO
 
 ## Process
 
 ### 1. Context Setup & Research
 
-**Create `.agent_session/context.md`**:
+**Ensure `.agent_session/context.md` exists** (create with the template below if not), read it closely, and capture prior decisions or TODOs before acting:
 ```markdown
-# Session Context: [Feature Name]
-Last Updated: [timestamp]
-
-## Issue Summary
-- **ID**: #[number]
-- **Requirement**: [summary]
-- **Scope**: [included]
-- **Out of Scope**: [excluded]
-
-## Key Discoveries
-- **Existing Patterns**: [findings]
-- **Files Involved**: [paths with purpose]
-- **Current Implementation**: [how it works]
-
-## Design Decisions
-- **Approach**: [chosen]
-- **Rationale**: [why]
-- **Alternatives**: [other options]
-
-## Open Questions
-- [ ] [unresolved items]
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
 ```
 
 **Spawn parallel research** (update context.md first):
@@ -143,8 +132,15 @@ Write to `.agent_session/plan.md` in Italian language:
 - Similar: [file:line]
 ````
 
-### 4. Review
+### 4. Update Context & Review
 
+**Update `.agent_session/context.md`**:
+- Summarize plan highlights in Overview section
+- Document key decisions in Decisions section
+- List open items in TODO section
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] create-plan: created plan for [feature], [N] phases, waiting approval`
+
+**Present to user**:
 ```
 Piano in `.agent_session/plan.md`
 

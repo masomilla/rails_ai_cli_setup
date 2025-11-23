@@ -7,18 +7,33 @@ Comprehensive UI review using Playwright for live testing. Check visual consiste
 
 ## Core Rules
 
-1. **Live Testing First**: Test actual user experience before static analysis
-2. **Rails UI Patterns**: Verify Hotwire integration (Turbo/Stimulus)
-3. **Accessibility**: WCAG 2.1 AA compliance
-4. **Categorize Findings**: Blockers, High Priority, Suggestions, Nitpicks
-5. **Evidence-Based**: Screenshots for visual issues
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Live Testing First**: Test actual user experience before static analysis
+4. **Rails UI Patterns**: Verify Hotwire integration (Turbo/Stimulus)
+5. **Accessibility**: WCAG 2.1 AA compliance
+6. **Categorize Findings**: Blockers, High Priority, Suggestions, Nitpicks
+7. **Evidence-Based**: Screenshots for visual issues
 
 ## Process
 
-### 1. Preparation
+### 1. Context Sync & Preparation
+
+**Context sync**: Ensure `.agent_session/context.md` exists (create with template below if not), read it closely, and capture prior decisions or TODOs before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
 
 **Understand changes**:
-- Read `.agent_session/context.md` or PR via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh pr view [number]`
+- Check PR via `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh pr view [number]` if applicable
 - Check `app/views/`, `app/javascript/controllers/`, controllers
 - Run `git diff HEAD~1..HEAD`
 
@@ -175,6 +190,11 @@ mcp__playwright__browser_console_messages()
 ## Screenshots
 [Visual evidence]
 ```
+
+**Update `.agent_session/context.md`**:
+- Document review findings in Overview section
+- Add UX issues to TODO section
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] ux-review: reviewed [pages], [N] issues found`
 
 ## Quality Standards
 

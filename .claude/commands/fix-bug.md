@@ -24,32 +24,35 @@ Fix bugs in Rails by reading issue, investigating root cause, and implementing t
 
 ## Core Rules
 
-1. **Context First**: Create/update `.agent_session/context.md` throughout process
-2. **Rails Patterns**: Follow conventions, ensure multi-tenancy
-3. **Test Coverage**: Add tests that prevent regression
-4. **Minimal Fix**: Targeted changes, not refactoring
-5. **Track Progress**: Use TodoWrite for bug fix tasks
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Rails Patterns**: Follow conventions, ensure multi-tenancy
+4. **Test Coverage**: Add tests that prevent regression
+5. **Minimal Fix**: Targeted changes, not refactoring
+6. **Track Progress**: Use TodoWrite for bug fix tasks
 
 ## Process
 
-### 1. Issue Analysis
+### 1. Issue Analysis & Context Sync
+
+**Ensure `.agent_session/context.md` exists** (create with template below if not), read it closely, and capture prior decisions or TODOs before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
 
 **Read bug issue**:
 - GitHub: `GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh issue view [number]`
 - Extract: bug description, steps to reproduce, expected behavior, affected components
 
-**Create context**:
-```markdown
-# Bug Fix: [Title]
-## Bug Summary
-- **Issue**: #[number]
-- **Problem**: [description]
-- **Impact**: [severity]
-- **Components**: [models/controllers/views/jobs]
-
-## Steps to Reproduce
-1. [steps]
-```
+**Update context Overview** with bug summary
 
 ### 2. Investigation
 
@@ -120,6 +123,11 @@ Solution: [what changed]
 Files: [modified files]
 Tests: [added tests]
 ```
+
+**Update `.agent_session/context.md`**:
+- Document fix outcomes in Overview section
+- Clear bug-related items from TODO section
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] fix-bug: fixed #[issue], [test results]`
 
 ## Common Bug Types
 

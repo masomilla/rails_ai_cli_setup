@@ -7,24 +7,39 @@ Create pull request for implemented Rails features. Analyze git changes, run ver
 
 ## Core Rules
 
-1. **Context First**: Read `.agent_session/context.md` and `.agent_session/plan.md`
-2. **Verify Branch**: Check current branch, ensure no existing PR
-3. **Run Checks**: Execute automated tests before creating PR
-4. **No Attribution**: Never add co-author or Claude attribution
-5. **Imperative Mood**: "Add feature" not "Added feature"
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Plan Reference**: Read `.agent_session/plan.md` if available to understand scope; skip diffing against main if plan exists.
+4. **Verify Branch**: Check current branch, ensure no existing PR
+5. **Run Checks**: Execute automated tests before creating PR
+6. **No Attribution**: Never add co-author or Claude attribution
+7. **Imperative Mood**: "Add feature" not "Added feature"
 
 ## Process
 
-### 1. Understand Implementation
+### 1. Context Sync & Understand Implementation
 
-**Read context**:
+**Context sync**: Ensure `.agent_session/context.md` exists (create with template below if not), read it closely, and capture prior decisions or TODOs before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
+
+**Read changes**:
 ```bash
 git status
 git diff HEAD~1..HEAD
 git log --oneline -n 10
 ```
 
-**Check files**: `.agent_session/context.md`, `.agent_session/plan.md`
+**Check files**: `.agent_session/plan.md` if available
 
 **Analyze Rails changes**:
 - Migrations: `db/migrate/`
@@ -78,8 +93,12 @@ git push -u origin [branch]
 GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh pr create --title "[Title]" --body-file .agent_session/pr_description.md --base main
 ```
 
+**Update `.agent_session/context.md`**:
+- Document PR creation in Overview section
+- Update TODO section with manual verification items
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] pr: created PR #[number], [url]`
+
 Save description to `.agent_session/pr_description.md`
-Update `.agent_session/context.md` with PR status
 
 ## PR Description Template (Italian)
 

@@ -7,15 +7,29 @@ Validate implementation plan execution, verify success criteria, check Rails con
 
 ## Core Rules
 
-1. **Context First**: Read `.agent_session/context.md` and `.agent_session/plan.md`
-2. **Automated Tests**: Run all checks before manual verification
-3. **Rails Patterns**: Verify conventions and multi-tenancy
-4. **Be Thorough**: Document successes and issues
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Plan Reference**: Read `.agent_session/plan.md` to understand expected changes.
+4. **Automated Tests**: Run all checks before manual verification
+5. **Rails Patterns**: Verify conventions and multi-tenancy
+6. **Be Thorough**: Document successes and issues
 
 ## Initial Setup
 
-**Check context**:
-- Read `.agent_session/context.md` for implementation status
+**Context sync**: Ensure `.agent_session/context.md` exists (create with template below if not), read it closely, and capture prior decisions or TODOs before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
+
+**Check files**:
 - Read `.agent_session/plan.md` for planned changes
 - If missing, analyze git commits
 
@@ -113,6 +127,11 @@ bearer scan .                                   # Security
 - Eager load relations
 - Update `/docs`
 ```
+
+**Update `.agent_session/context.md`**:
+- Document validation results in Overview section
+- Note any issues found in TODO section
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] validate-plan: [N] phases validated, [issues summary]`
 
 ## Rails Validation Checklist
 

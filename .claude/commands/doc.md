@@ -30,15 +30,30 @@ Update `/docs` documentation based on git changes. Analyze modifications, follow
 
 ## Core Rules
 
-1. **Context First**: Read `.agent_session/context.md` if available
-2. **Update Over Create**: Prefer updating existing docs
-3. **Language**: Italian (headings/descriptions), English (code/technical terms/comments)
-4. **Index**: Update `/docs/README.md` when adding files
-5. **Complete Examples**: Functional code with English comments
+1. **Context First**: Maintain `.agent_session/context.md` as the shared state file: read it fully before working. If missing, create it with the standard template.
+2. **Update Log**: After each run, refresh the `Overview/Decisions/TODO` sections and append a new dated log entry.
+3. **Plan Reference**: Check `.agent_session/plan.md` if available to determine scope; skip diffing against main if plan exists.
+4. **Update Over Create**: Prefer updating existing docs
+5. **Language**: Italian (headings/descriptions), English (code/technical terms/comments)
+6. **Index**: Update `/docs/README.md` when adding files
+7. **Complete Examples**: Functional code with English comments
 
 ## Process
 
-### 1. Analyze Changes
+### 1. Context Sync & Analyze Changes
+
+**Context sync**: Ensure `.agent_session/context.md` exists (create with template below if not), read it closely, and capture prior decisions or TODOs before acting:
+```markdown
+# Session Context
+## Overview
+- Current feature/issue
+## Decisions
+-
+## TODO
+-
+## Log
+- [YYYY-MM-DD HH:MM TZ] command: summary, tests, next steps
+```
 
 **Understand implementation**:
 ```bash
@@ -47,7 +62,7 @@ git diff HEAD~1..HEAD
 git log --oneline -n 10
 ```
 
-**Read context**: `.agent_session/context.md` if available
+**Check plan**: `.agent_session/plan.md` if available
 
 **Map to documentation**:
 - **Rails features** → `/docs/technical/features/`
@@ -86,7 +101,7 @@ git log --oneline -n 10
 - Cross-reference related docs
 - Update `/docs/README.md` if new files
 
-### 4. Present Plan
+### 4. Present Plan & Update Context
 
 ```
 📚 Documentation Plan
@@ -103,6 +118,11 @@ Approach:
 
 Proceed?
 ```
+
+**Update `.agent_session/context.md`** after completion:
+- Document updated docs in Overview section
+- Clear documentation TODOs
+- Append dated log entry: `[YYYY-MM-DD HH:MM TZ] doc: updated [N] docs, [files list]`
 
 ## Documentation Structure
 
