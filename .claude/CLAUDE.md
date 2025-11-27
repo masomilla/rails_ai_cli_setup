@@ -56,7 +56,7 @@ Architecture: Monolithic Rails
 
 ## Rails principles
 
-Follow the principles described in context/rails_design_prinicples.md
+Follow the principles described in .claude/context/rails_design_prinicples.md
 
 ## Application Architecture
 

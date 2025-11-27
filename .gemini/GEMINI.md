@@ -43,7 +43,7 @@ GH_TOKEN=$(op.exe read "op://Employee/GitHub CLI PAT/token") gh <command>
 - **Timezone**: Europe/Rome.
 
 ## Rails Principles
-- **Guidelines**: Adhere to `context/rails_design_prinicples.md`.
+- **Guidelines**: Adhere to `.gemini/context/rails_design_prinicples.md`.
 - **Architecture**: Favor thin controllers, rich models, and idiomatic RESTful routing.
 
 ## Application Architecture

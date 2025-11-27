@@ -38,7 +38,7 @@ Ensure 1Password is unlocked locally before running these commands.
 - Rome timezone as default
 
 ### Rails Principles
-- Adhere to the guidelines documented in `context/rails_design_prinicples.md`
+- Adhere to the guidelines documented in `.codex/context/rails_design_prinicples.md`
 - Favor thin controllers, rich models, and idiomatic RESTful routing
 
 ### Application Architecture Highlights
